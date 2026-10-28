@@ -1,0 +1,776 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD JavaScript - Daffa</title>
+
+    <style>
+        :root {
+            --bg: #0b1020;
+            --bg-soft: #121a2b;
+            --panel: rgba(17, 24, 39, 0.82);
+            --panel-strong: rgba(10, 14, 24, 0.95);
+            --card: #f8fafc;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --gold: #facc15;
+            --red: #ff4d6d;
+            --blue: #60a5fa;
+            --cyan: #67e8f9;
+            --purple: #a78bfa;
+            --shadow: rgba(0, 0, 0, 0.28);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top, rgba(96, 165, 250, 0.2), transparent 30%),
+                linear-gradient(135deg, #050816 0%, #111827 35%, #0f172a 100%);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .topbar {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .brand-mark {
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, var(--gold), #f97316);
+            border-radius: 50%;
+            box-shadow: 0 0 18px rgba(250, 204, 21, 0.9);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        header.hero {
+            position: relative;
+            overflow: hidden;
+            color: white;
+            padding: 32px 20px 48px;
+        }
+
+        header.hero::before,
+        header.hero::after {
+            content: "";
+            position: absolute;
+            inset: auto auto -90px -80px;
+            width: 320px;
+            height: 320px;
+            background: rgba(96, 165, 250, 0.18);
+            border-radius: 50%;
+            filter: blur(18px);
+        }
+
+        header.hero::after {
+            inset: -40px -80px auto auto;
+            width: 260px;
+            height: 260px;
+            background: rgba(167, 139, 250, 0.16);
+        }
+
+        .hero-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 28px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 8px 14px;
+            border: 1px solid rgba(250, 204, 21, 0.5);
+            background: rgba(250, 204, 21, 0.08);
+            border-radius: 999px;
+            color: var(--gold);
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .hero h1 {
+            margin: 18px 0 12px;
+            font-size: clamp(2.5rem, 5vw, 5rem);
+            line-height: 0.96;
+            letter-spacing: -0.06em;
+        }
+
+        .hero h1 span {
+            color: var(--gold);
+            display: block;
+            text-shadow: 0 0 20px rgba(250, 204, 21, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.08rem;
+            color: #dfe7f5;
+            max-width: 620px;
+            margin-bottom: 20px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .cta,
+        .ghost {
+            border: none;
+            border-radius: 999px;
+            padding: 14px 22px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .cta {
+            background: linear-gradient(135deg, var(--gold), #f97316);
+            color: #111827;
+            box-shadow: 0 12px 34px rgba(249, 115, 22, 0.35);
+        }
+
+        .ghost {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: white;
+        }
+
+        .cta:hover,
+        .ghost:hover,
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        .stats {
+            display: flex;
+            gap: 22px;
+            flex-wrap: wrap;
+            list-style: none;
+            padding: 0;
+            margin: 18px 0 0;
+            color: var(--muted);
+        }
+
+        .stats li {
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .mission-card {
+            background: linear-gradient(180deg, rgba(17, 24, 39, 0.9), rgba(15, 23, 42, 0.72));
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 24px;
+            padding: 18px;
+            box-shadow: 0 20px 40px var(--shadow);
+            backdrop-filter: blur(5px);
+        }
+
+        .mission-card .inner {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.14), rgba(167, 139, 250, 0.18));
+            border-radius: 18px;
+            padding: 20px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .mission-card h3 {
+            margin: 0 0 12px;
+            font-size: 0.9rem;
+            letter-spacing: 0.14em;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        .mission-points {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 12px;
+        }
+
+        .mission-points li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .mission-points li::before {
+            content: "✦";
+            color: var(--cyan);
+            font-size: 1.2rem;
+            margin-top: -2px;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto 0;
+            padding: 0 20px 36px;
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin: 26px 0 20px;
+        }
+
+        .mini-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 20px;
+            padding: 22px 18px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+        }
+
+        .mini-card h3 {
+            margin: 0 0 10px;
+            color: var(--gold);
+            font-size: 1.1rem;
+        }
+
+        .mini-card p {
+            margin: 0;
+            color: #dfe7f5;
+        }
+
+        .identitas, .card {
+            background: var(--card);
+            color: #0f172a;
+            padding: 22px 20px;
+            border-radius: 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .identitas {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .identitas small {
+            display: block;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        h2 {
+            color: #0f172a;
+            margin-top: 0;
+            font-size: clamp(1.4rem, 2vw, 2rem);
+        }
+
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-x: auto;
+            border-left: 4px solid var(--gold);
+            box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.1);
+        }
+
+        .jawaban {
+            background: linear-gradient(135deg, #eff6ff, #e0f2fe);
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(59, 130, 246, 0.18);
+            color: #0f172a;
+        }
+
+        .jawaban b {
+            color: #1d4ed8;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 11px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #cbd5e1;
+            background: rgba(15, 23, 42, 0.75);
+            border-top: 1px solid rgba(148, 163, 184, 0.15);
+        }
+
+        @media (max-width: 800px) {
+            .hero-inner,
+            .intro-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .identitas {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                justify-content: center;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 2.6rem;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            .topbar,
+            .hero-actions,
+            .stats,
+            .mission-card,
+            .intro-grid,
+            button {
+                display: none !important;
+            }
+
+            header.hero {
+                background: white;
+                color: black;
+                padding: 0;
+            }
+
+            main {
+                margin-top: 0;
+            }
+
+            .identitas, .card {
+                box-shadow: none;
+                border: 1px solid #cbd5e1;
+                background: white;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="hero">
+    <div class="topbar">
+        <div class="brand">
+            <span class="brand-mark"></span>
+            ファントム研究
+        </div>
+        <nav class="nav-links" aria-label="Navigasi utama">
+            <a href="#profil">Profil</a>
+            <a href="#materi">Materi</a>
+            <a href="#refleksi">Refleksi</a>
+        </nav>
+    </div>
+
+    <div class="hero-inner">
+        <div>
+            <h1>JavaScript <span>Dalam Misi Belajar</span></h1>
+            <p>
+                Di dunia yang penuh tantangan, setiap baris kode adalah langkah untuk
+                membangun solusi. Di sini kita belajar input, output, dan operator aritmatika
+                dengan cara yang lebih hidup, terstruktur, dan mudah dipahami.
+            </p>
+
+            <div class="hero-actions">
+                <button class="cta" onclick="document.getElementById('materi').scrollIntoView({behavior:'smooth'});">
+                    Mulai Belajar
+                </button>
+
+            </div>
+
+            <ul class="stats">
+                <li>Input & Output</li>
+                <li>Operator Aritmatika</li>
+                <li>Logika Program</li>
+            </ul>
+        </div>
+
+        <aside class="mission-card" aria-label="Ringkasan misi">
+            <div class="inner">
+                <h3>Mission Briefing</h3>
+                <ul class="mission-points">
+                    <li>Memahami cara program menerima data dari pengguna.</li>
+                    <li>Mengolah data dengan variabel dan operasi matematika.</li>
+                    <li>Menyajikan hasil agar program lebih berguna dan terarah.</li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</header>
+
+<main>
+    <section class="intro-grid" aria-label="Penjelasan singkat">
+        <article class="mini-card">
+            <h3>Apa itu JavaScript?</h3>
+            <p>
+                JavaScript adalah bahasa pemrograman yang digunakan untuk membuat website interaktif,
+                mulai dari tombol, form, animasi, hingga logika bisnis sederhana.
+            </p>
+        </article>
+
+        <article class="mini-card">
+            <h3>Kenapa penting?</h3>
+            <p>
+                Dengan JavaScript, kita bisa membuat program yang bekerja sesuai input pengguna,
+                mengolah informasi, dan menampilkan hasil secara cepat dan dinamis.
+            </p>
+        </article>
+
+        <article class="mini-card">
+            <h3>Tujuan belajar</h3>
+            <p>
+                Kita belajar dasar-dasar pemrograman agar mampu membaca kode, memecahkan masalah,
+                dan membangun aplikasi sederhana di masa depan.
+            </p>
+        </article>
+    </section>
+
+    <section id="profil" class="identitas">
+        <div>
+            <small>Nama</small>
+            <strong>Daffa Naufal farras</strong>
+        </div>
+
+        <div>
+            <small>Kelas</small>
+            <strong>X PPLG-2</strong>
+        </div>
+
+        <div>
+            <small>Tanggal</small>
+            <strong>Rabu, 28 Oktober 2026</strong>
+        </div>
+    </section>
+
+
+    <section id="materi" class="card">
+        <h2>Petunjuk</h2>
+        <p>
+            Kerjakan aktivitas secara berurutan. Amati kode dan pahami hasil program JavaScript.
+            Setiap tugas adalah bagian dari perjalanan belajar untuk memahami bagaimana komputer
+            menerima, memproses, dan menampilkan data.
+        </p>
+    </section>
+
+
+    <section class="card">
+        <h2>Petunjuk</h2>
+        <p>
+            Kerjakan aktivitas secara berurutan.
+            Amati kode dan pahami hasil program JavaScript.
+        </p>
+    </section>
+
+    <section class="card">
+        <h2>Cara Membaca Kode JavaScript</h2>
+        <p>
+            Bacalah kode dari baris paling atas ke bawah. Program menjalankan perintah
+            secara berurutan, sehingga nilai yang dibuat lebih dahulu bisa dipakai pada
+            baris berikutnya.
+        </p>
+        <ol>
+            <li><b>Periksa variabel:</b> lihat nama dan nilai yang disimpan, misalnya <code>let harga = 5000;</code>.</li>
+            <li><b>Ikuti proses:</b> hitung menggunakan nilai variabel, misalnya <code>harga * jumlah</code>.</li>
+            <li><b>Cari output:</b> perintah <code>console.log()</code> menunjukkan nilai yang akan ditampilkan di Console.</li>
+        </ol>
+        <div class="jawaban">
+            <b>Ingat:</b> angka dapat langsung dihitung, sedangkan teks biasanya ditulis
+            di antara tanda kutip. Misalnya <code>let nama = "Daffa";</code> menyimpan teks,
+            sementara <code>let umur = 16;</code> menyimpan angka.
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Aktivitas 1 - Prediksi Operator</h2>
+        <pre>
+let a = 10;
+let b = 5;
+
+console.log(a + b);
+console.log(a - b);
+console.log(a * b);
+console.log(a / b);
+        </pre>
+
+        <div class="jawaban">
+            <p>Penjumlahan: 15</p>
+            <p>Pengurangan: 5</p>
+            <p>Perkalian: 50</p>
+            <p>Pembagian: 2</p>
+            <p><b>Penjelasan:</b> Program menghitung pasangan nilai yang sama, yaitu 10 dan 5,
+                dengan empat operator. Contohnya, <code>a * b</code> berarti 10 dikali 5.</p>
+            <b>Kesimpulan:</b> Hasil sesuai perhitungan.
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Aktivitas 2 - Eksperimen</h2>
+        <pre>
+let a = 20;
+let b = 4;
+
+console.log(a + b);
+console.log(a - b);
+console.log(a * b);
+console.log(a / b);
+console.log(a % b);
+        </pre>
+
+        <div class="jawaban">
+            <p>Hasil: 24, 16, 80, 5, 0.</p>
+            <p><b>Penjelasan:</b> 20 dibagi 4 hasilnya 5 tanpa sisa, sehingga
+                <code>20 % 4</code> menghasilkan 0. Operator <code>%</code> mencari sisa pembagian.</p>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Aktivitas 3 - Input prompt()</h2>
+        <pre>
+let nama = prompt("Masukkan nama:");
+console.log(nama);
+
+let umur = prompt("Masukkan umur:");
+console.log(umur);
+        </pre>
+
+        <div class="jawaban">
+            Fungsi prompt() adalah meminta pengguna
+            memasukkan data melalui kotak dialog. Nilai yang diketik pengguna disimpan
+            ke variabel <code>nama</code> dan <code>umur</code>, lalu ditampilkan di Console.
+            Perlu diingat, hasil <code>prompt()</code> berupa teks; gunakan
+            <code>Number()</code> jika input angka akan dipakai untuk perhitungan.
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Aktivitas 4 - Menghitung Umur</h2>
+        <pre>
+let tahunLahir = 2010;
+let tahunSekarang = 2026;
+let umur = tahunSekarang - tahunLahir;
+
+console.log(umur);
+        </pre>
+
+        <div class="jawaban">
+            <b>Contoh hasil: 16 tahun.</b> Program mengurangi tahun sekarang (2026)
+            dengan tahun lahir (2010), yaitu <code>2026 - 2010</code>.
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Aktivitas 5 - Mesin Kasir Mini</h2>
+        <pre>
+let harga = 5000;
+let jumlah = 4;
+let total = harga * jumlah;
+
+console.log(total);
+        </pre>
+
+        <div class="jawaban">
+            Total pembayaran adalah Rp20.000. Harga satu barang Rp5.000 dikalikan
+            jumlah 4 barang: <code>5000 * 4 = 20000</code>.
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Aktivitas 6 - Think Pair Share</h2>
+        <p><b>Think:</b> Variabel total menyimpan hasil perhitungan.</p>
+        <p><b>Pair:</b> Jawaban sama.</p>
+        <p><b>Share:</b> Variabel membantu menyimpan dan menampilkan hasil.</p>
+    </section>
+
+    <section class="card">
+        <h2>Aktivitas 7 - Warung Digital</h2>
+        <pre>
+let makanan = "Bakso";
+let harga = 10000;
+let jumlah = 2;
+
+let total = harga * jumlah;
+let diskon = total * 10 / 100;
+let bayar = total - diskon;
+
+console.log(makanan);
+console.log(total);
+console.log(diskon);
+console.log(bayar);
+        </pre>
+
+        <div class="jawaban">
+            <p>Makanan: Bakso</p>
+            <p>Total: Rp20.000</p>
+            <p>Diskon: Rp2.000</p>
+            <b>Total bayar: Rp18.000</b>
+            <p><b>Penjelasan:</b> Total diperoleh dari harga dikali jumlah.
+                Diskon 10% dihitung dari total, lalu dikurangi untuk memperoleh jumlah yang dibayar.</p>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Aktivitas 8 - Debugging</h2>
+        <p>
+            Kesalahan: nama variabel tidak boleh menggunakan
+            spasi seperti <code>total harga</code>.
+        </p>
+
+        <pre>
+let harga = 5000;
+let jumlah = 3;
+let totalHarga = harga * jumlah;
+
+console.log(totalHarga);
+        </pre>
+
+        <div class="jawaban">
+            Perbaikan menggunakan nama variabel totalHarga.
+            Hasilnya adalah 15000 karena <code>5000 * 3 = 15000</code>.
+            Nama variabel tidak boleh mengandung spasi; gunakan gaya seperti
+            <code>totalHarga</code> atau garis bawah seperti <code>total_harga</code>.
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Aktivitas 9 - Kalkulator Tabungan</h2>
+        <pre>
+let uangAwal = 10000;
+let hari1 = 2000;
+let hari2 = 3000;
+let hari3 = 5000;
+
+let total = uangAwal + hari1 + hari2 + hari3;
+
+console.log(total);
+        </pre>
+
+        <div class="jawaban">
+            Total tabungan: Rp20.000. Jumlahkan uang awal dan tabungan dari ketiga hari:
+            <code>10000 + 2000 + 3000 + 5000 = 20000</code>.
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Asesmen Formatif</h2>
+        <ol>
+            <li>8 + 2 = <b>10</b>.</li>
+            <li>10 % 3 = <b>1</b>.</li>
+            <li>prompt() digunakan untuk meminta input pengguna.</li>
+            <li>
+                Luas persegi panjang:
+                10 × 5 = <b>50</b>.
+            </li>
+        </ol>
+    </section>
+
+    <section class="card">
+        <h2>Refleksi Pembelajaran</h2>
+        <p>
+            <b>Berkesadaran:</b>
+            Saya memahami fungsi variabel.
+        </p>
+        <p>
+            <b>Bermakna:</b>
+            Materi bisa digunakan untuk membuat program kasir.
+        </p>
+        <p>
+            <b>Menggembirakan:</b>
+            Saya suka membuat program sederhana.
+        </p>
+    </section>
+
+    <section class="card">
+        <h2>Exit Ticket</h2>
+        <ol>
+            <li>Sudah dikuasai: operator aritmatika.</li>
+            <li>Masih membingungkan: konversi teks ke angka.</li>
+            <li>Ingin dicoba: membuat kalkulator JavaScript.</li>
+        </ol>
+    </section>
+
+    <section class="card">
+        <h2>Kesimpulan</h2>
+        <p>
+            JavaScript dapat menerima input menggunakan prompt(),
+            mengolah data menggunakan variabel dan operator,
+            lalu menampilkan hasil dengan console.log().
+        </p>
+    </section>
+
+</main>
+
+<footer>
+    LKPD JavaScript | X PPLG-2
+</footer>
+
+</body>
+</html>
